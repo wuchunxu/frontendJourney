@@ -52,7 +52,10 @@ class App extends Component {
             fetch(`resources/${book}.md`)
             .then(res =>res.text())
             .then(data=>markdown2html(data))
-            .then(data => this.setState({ article: data, loading: false }))
+            .then(data => {
+                console.log(data)
+                this.setState({ article: data, loading: false })
+            })
     }
     render() {
         const { article, loading, innerHeight } = this.state;
