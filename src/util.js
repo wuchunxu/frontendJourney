@@ -73,7 +73,7 @@ const regExps = [
         }
     },
     {
-        regExp: /^`{3}\s{0,}/, // 匹配代码片段
+        regExp: /^`{3}\s{1,}/, // 匹配代码片段
         convert(text, controller) {
             const { isInPre } = controller;
             let result = isInPre ? '</pre>' : '<pre class="code">';
@@ -148,7 +148,7 @@ function markdown2html(markdownText) {
                     insideConvert(line) :
                     `<p class="article-p">${insideConvert(line)}</p>`;
             }
-        }).join('') + '</li></ul>';
+        }).join('\n') + '</li></ul>';
 }
 // module.exports = {
 //     markdown2html
