@@ -1,0 +1,119 @@
+
+.books {
+    padding:20px;
+}
+/* 序号 */
+.article-h1 {
+    counter-reset: h1;
+}
+.article-h2 {
+    counter-reset: h2;
+}
+.article-h3 {
+    counter-reset: h3;
+}
+.article-h2::before{
+    content: counter(h1)' ';
+    counter-increment: h1;
+}
+.article-h3::before{
+    content: counter(h1)'.'counter(h2)' ';
+    counter-increment: h2;
+}
+.article-h4::before {
+    content: counter(h1)'.'counter(h2)'.'counter(h3)' ';
+    counter-increment: h3;
+}
+/* 标题样式 */
+.article-h1,.article-h2,.article-h3,.article-h4 {
+    font-family:'等线',Tahoma;
+    font-weight: bold;
+}
+.article-h1 {
+    font-size: 30px;
+    text-align: center;
+    color: #4CAF50;
+}
+.article-h2 {
+    font-size: 24px;
+    border-bottom:1px solid #ccc;
+    padding:10px;
+    color:#66BB6A;
+}
+.article-h3 {
+    font-size: 20px;
+    padding:10px;
+}
+.article-h4 {
+    font-size: 16px;
+    padding:10px;
+    
+}
+p{
+    font-family: Consolas,serif;
+    line-height: 1.6em;
+    padding:5px 10px;
+    text-indent: 2em;
+}
+pre.code {
+    padding:10px;
+    border-radius: 5px;
+    background: #C8E6C9 ;
+    border:1px dotted #81C784;
+    font-size: 14px;
+    font-family: Consolas;
+    line-height: 1.6em;
+    margin:0 30px;
+}
+pre.code+pre.code {
+    margin-top:15px;
+}
+@keyframes hue {
+    from {
+        -webkit-filter: hue-rotate(0deg);
+    }
+
+    to {
+        -webkit-filter: hue-rotate(-360deg);
+    }
+}
+.colorful {
+    background-image:linear-gradient(92deg,#f35626,#feab3a);
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: hue 60s infinite linear;
+    color:#f35626;
+    -webkit-background-clip: text;
+}
+span.code {
+    background:#C8E6C9;
+    padding:5px;
+    color:#43A047;
+    border-radius: 4px;
+}
+blockquote.hint{
+    background: #C8E6C9;
+    padding:10px 20px;
+    font-family: consolas,'等线';
+    color:#43A047;
+    border:1px dashed #43A047;
+    border-radius: 4px;
+}
+.material-table {
+    border:1px solid #43A047;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin:20px 30px;
+    border-radius:4px;
+}
+.material-table td {
+    padding:5px 10px;
+    text-align:center;
+    font-family: consolas,'等线';
+}
+.material-table tr:nth-child(2n+1){
+    background: #C8E6C9;
+}
+.material-table tr:first-child td {
+    background: #81C784;
+}
