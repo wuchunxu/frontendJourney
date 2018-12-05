@@ -17,7 +17,7 @@ function insideConvert(inside) {
             treatment: target => `<em>${target.slice(1, -1)}</em>`
         },
         {
-            regExp: /\`{1}.*?\`{1}/g, //匹配文字内嵌的代码
+            regExp: /`{1}.*?`{1}/g, //匹配文字内嵌的代码
             treatment: target => `<span class="code">${target.slice(1,-1)}</span>`
         }
 

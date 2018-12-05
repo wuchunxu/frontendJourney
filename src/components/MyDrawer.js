@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { Drawer, withStyles, List, ListItem, ListItemText, AppBar, Toolbar, Typography, Divider, Paper, LinearProgress, CircularProgress } from '@material-ui/core';
+import { Drawer, withStyles, List, ListItem, ListItemText, AppBar, Toolbar, Typography, Divider, Paper, CircularProgress } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import green from '@material-ui/core/colors/green';
-import lightGreen from '@material-ui/core/colors/lightGreen';
-import indigo from '@material-ui/core/colors/indigo';
 
 const drawerWidth = 240;
 const styles = theme => ({
