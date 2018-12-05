@@ -5,6 +5,7 @@
 
 ### Markdown文本是如何被渲染的？
 + 页面中如何渲染markdown文本？
+    通过正则表达式，将`markdown`转换成`html`
 ### 如何自定义markdown的样式？
 
 ### markdown可以扩展吗？
