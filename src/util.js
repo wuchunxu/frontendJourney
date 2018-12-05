@@ -73,7 +73,7 @@ const regExps = [
         }
     },
     {
-        regExp: /^`{3}\s+/, // 匹配代码片段
+        regExp: /^`{3}\s{0,}/, // 匹配代码片段
         convert(text, controller) {
             const { isInPre } = controller;
             let result = isInPre ? '</pre>' : '<pre class="code">';
@@ -120,6 +120,7 @@ function markdown2html(markdownText) {
     return cut2Lines(markdownText) // markdown文本按行进行切割
         .map(line => { // 逐行将markdown翻译成html
             const regExp = regExps.find(({ regExp }) => isMatched(line, regExp)); // 查找匹配到的正则
+            // console.log(regExp)
             if (regExp) {
                 
                 if(regExp.isTable){ // 检测到table元素
