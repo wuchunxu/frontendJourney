@@ -9,23 +9,18 @@ import './App.css';
 import MyDrawer from './components/MyDrawer';
 import { markdown2html } from './util';
 
-const books = ['HTML5', 'React', 'Markdown', 'Material-UI','微信小程序','正则表达式','JS性能优化'];
+const books = ['Git','HTML5', 'React', 'Markdown', 'Material-UI','微信小程序','正则表达式','JS性能优化'];
 
 
 class App extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            article: '',
-            books: books,
-            current: 'React',
-            loading: false,
-            innerHeight:800
-        };
-        this.update = this.update.bind(this);
-        this.setHeight = this.setHeight.bind(this);
-    }
+    state = {
+        article: '',
+        books: books,
+        current: 'React',
+        loading: false,
+        innerHeight:800
+    };
 
     componentWillMount() {
         this.setHeight();
@@ -37,23 +32,20 @@ class App extends Component {
         window.onresize = null;
     }
 
-    setHeight(){
+    setHeight=()=>{
         this.setState({
             innerHeight:window.innerHeight
         })
     }
 
-    update(book="React") {
+    update = (book="React")=> {
         this.setState({ loading: true });
-        // fetch(`/article?src=${encodeURIComponent(book)}`, {
-        //     'Content-Type': 'text/html'
-        // })
-            // fetch(`resources/${encodeURIComponent(book)}.md`)
-            fetch(`resources/${book}.md`)
+            fetch(`resources/${book}.md`,{
+                'Content-Type':'text/html;charset=UTF-8'
+            })
             .then(res =>res.text())
             .then(data=>markdown2html(data))
             .then(data => {
-                console.log(data)
                 this.setState({ article: data, loading: false })
             })
     }
