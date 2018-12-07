@@ -1,6 +1,7 @@
 
 .books {
     padding:20px;
+    counter-reset: book;
 }
 /* 序号 */
 .article-h1 {
@@ -13,15 +14,16 @@
     counter-reset: h3;
 }
 .article-h2::before{
-    content: counter(h1)' ';
-    counter-increment: h1;
+    /* content: counter(h1)' '; */
+    content:counter(book)' ';
+    counter-increment: book;
 }
 .article-h3::before{
-    content: counter(h1)'.'counter(h2)' ';
+    content: counter(book)'.'counter(h2)' ';
     counter-increment: h2;
 }
 .article-h4::before {
-    content: counter(h1)'.'counter(h2)'.'counter(h3)' ';
+    content: counter(book)'.'counter(h2)'.'counter(h3)' ';
     counter-increment: h3;
 }
 /* 标题样式 */
@@ -64,10 +66,13 @@ pre.code {
     font-family: Consolas;
     line-height: 1.6em;
     margin:0 30px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 pre.code+pre.code {
     margin-top:15px;
 }
+
 @keyframes hue {
     from {
         -webkit-filter: hue-rotate(0deg);
@@ -116,4 +121,29 @@ blockquote.hint{
 }
 .material-table tr:first-child td {
     background: #81C784;
+}
+/* 适配手机端 */
+@media screen and (max-width:767px){
+    pre.code {
+        margin:0;
+    }
+    .books {
+        padding:14px;
+    }
+    p{
+        line-height: 1.8em;
+        padding:0;
+    }
+    span.code {
+        padding:3px;
+    }
+    .material-table {
+        width: 100%;
+        margin:20px 0;
+    }
+    blockquote.hint{
+        padding:10px;
+        margin-inline-start: 10px;
+        margin-inline-end: 10px;
+    }
 }

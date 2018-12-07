@@ -32,9 +32,10 @@ function insideConvert(inside) {
 */
 const regExps = [
     {
-        regExp: /^#\s+/,
+        regExp: /^#{1}\s+/,
         convert(text) {
-            return `<ul class="books"><h1 class="article-h1">${text.replace(/^#\s+/, '')}</h1>`
+            // return `<ul class="books"><h1 class="article-h1">${text.replace(/^#\s+/, '')}</h1>`
+            return `<ul class="books">`
         }
     },
     {

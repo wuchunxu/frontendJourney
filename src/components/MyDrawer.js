@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
-import { Drawer, withStyles, List, ListItem, ListItemText, AppBar, Toolbar, Typography, Divider, Paper, CircularProgress, IconButton } from '@material-ui/core';
+import {
+    Drawer, withStyles, List, ListItem, ListItemText, AppBar, Toolbar, Typography, Divider, Paper, CircularProgress, IconButton
+} from '@material-ui/core';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import IconReorder from '@material-ui/icons/Reorder';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import green from '@material-ui/core/colors/green';
 
@@ -20,11 +23,13 @@ const styles = theme => ({
         position: 'relative',
         width: drawerWidth + 'px'
     },
-    toolbar: theme.mixins.toolbar,
+    toolbar: {
+        ...theme.mixins.toolbar
+    },
     content: {
         flexGrow: 1,
         overflow: 'auto',
-        padding: theme.spacing.unit * 3,
+        // padding: theme.spacing.unit * 1,
         transition: theme.transitions.create('margin', {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -65,13 +70,36 @@ const styles = theme => ({
         justifyContent: 'space-between',
         position: 'relative'
     },
+    grow: {
+        flexGrow: 1,
+    },
+    paper:{
+        backgroundColor:'#F1F8E9',
+        marginTop:60
+    },
+    listItemText:{
+        transition:theme.transitions.create('color',{
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen
+        }),
+        color: green[500]
+    }
 });
 
 class MyDrawer extends Component {
 
+    /*
+        1、属性类型，用来检查使用组件时，是否传入了相关属性，若没有，编译的时候会报错
+        2、【代替方案，不推荐】if(onSelectBook)onSelectBook(title)使用时加上判断也是可以的，但是更推荐属性类型检查
+        3、属性类型检查是编写健壮纯UI组件的开始，非常重要！
+    */
     static propTypes = {
         classes: PropTypes.object.isRequired,
+        onSelectBook: PropTypes.func.isRequired,
+        article:PropTypes.string,
+        loading:PropTypes.bool
     }
+
 
     state = {
         drawerOpen: true
@@ -79,11 +107,13 @@ class MyDrawer extends Component {
 
     openDrawer = () => this.setState({ drawerOpen: true })
     closeDrawer = () => this.setState({ drawerOpen: false })
+    openProfile = () => {
+        console.log('open profile')
+    }
 
     render() {
-        const { classes, lists, func, content, height, loading } = this.props;
+        const { classes, lists, onSelectBook, height, loading, article,selected } = this.props;
         const { drawerOpen } = this.state;
-
         let drawer = (
             <Drawer
                 variant="persistent"
@@ -97,18 +127,12 @@ class MyDrawer extends Component {
                         <ChevronLeftIcon />
                     </IconButton>
                 </div>
-                {/* <List>
-                    <ListItem>
-                        <ListItemText >
-                        </ListItemText>
-                    </ListItem>
-                </List> */}
                 <Divider />
                 {
-                    lists.map((item, i) =>
+                    lists.map(({ title }, i) =>
                         <List key={i}>
-                            <ListItem button onClick={() => func(item)}>
-                                <ListItemText>{item}</ListItemText>
+                            <ListItem button onClick={() => onSelectBook(title)}>
+                                <ListItemText classes={{primary:title===selected&&classes.listItemText}}>{title}</ListItemText>
                             </ListItem>
                         </List>
                     )
@@ -118,30 +142,39 @@ class MyDrawer extends Component {
 
         return (
             <div className={classes.appFrame} style={{ height }}>
-                <AppBar className={classes.appBar}>
+                <AppBar className={classNames(classes.appBar, {
+                    [classes.appBarShift]: drawerOpen,
+                })}>
                     <Toolbar
                         disableGutters={!drawerOpen}
-                        className={classNames(classes.appBar, {
-                            [classes.appBarShift]: drawerOpen,
-                        })}
+                        className={classes.appBar}
                     >
                         <IconButton color="inherit" onClick={this.openDrawer}
                             className={classNames(drawerOpen && classes.hide)}><IconReorder /></IconButton>
                         <Typography variant="title" color="inherit" noWrap>
-                            文章的标题
+                            {selected}
                         </Typography>
+                        {
+                            loading?<CircularProgress color="inherit" size={20} />:''
+                        }
+                        <div className={classes.grow}></div>
+                        <div>
+                            <IconButton onClick={this.openProfile} color="inherit">
+                                <AccountCircle />
+                            </IconButton>
+                        </div>
                     </Toolbar>
                 </AppBar>
                 {drawer}
                 <main className={classNames(classes.content, {
                     [classes.contentShift]: drawerOpen,
                 })}>
-                    {
+                    {/* {
                         loading ?
-                            <div style={{ textAlign: "center" }}><CircularProgress /></div> :
-                            <Paper dangerouslySetInnerHTML={{ __html: content }} style={{ backgroundColor: '#F1F8E9' }}></Paper>
-                    }
-
+                            <div style={{ textAlign: "center" ,marginTop:100}} ><CircularProgress /></div> :
+                            <Paper dangerouslySetInnerHTML={{ __html: article }} className={classes.paper}></Paper>
+                    } */}
+                    <Paper dangerouslySetInnerHTML={{ __html: article }} className={classes.paper}></Paper>
                 </main>
             </div>
 
