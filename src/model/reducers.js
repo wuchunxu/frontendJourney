@@ -1,4 +1,4 @@
-const select = (state = 'Git', action) => {
+const select = (state = '请从左侧边栏选择笔记', action) => {
     switch (action.type) {
         case 'SELECT_BOOK':
             return action.title;
@@ -11,7 +11,7 @@ const directory = (state = {}, action) => {
         case 'SELECT_BOOK':
             return {
                 ...state,
-                selected: select(null, action)
+                selected: select(state.selected, action)
             }
         default:
             return state

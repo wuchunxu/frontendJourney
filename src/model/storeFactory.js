@@ -1,4 +1,4 @@
-// store工厂
+// storeFactory.js
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { initialState } from './initialState';
 import { directory ,article,loading } from './reducers';

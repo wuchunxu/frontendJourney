@@ -73,12 +73,12 @@ const styles = theme => ({
     grow: {
         flexGrow: 1,
     },
-    paper:{
-        backgroundColor:'#F1F8E9',
-        marginTop:60
+    paper: {
+        backgroundColor: '#F1F8E9',
+        marginTop: 60
     },
-    listItemText:{
-        transition:theme.transitions.create('color',{
+    listItemText: {
+        transition: theme.transitions.create('color', {
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.enteringScreen
         }),
@@ -96,8 +96,8 @@ class MyDrawer extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
         onSelectBook: PropTypes.func.isRequired,
-        article:PropTypes.string,
-        loading:PropTypes.bool
+        article: PropTypes.string,
+        loading: PropTypes.bool
     }
 
 
@@ -112,7 +112,7 @@ class MyDrawer extends Component {
     }
 
     render() {
-        const { classes, lists, onSelectBook, height, loading, article,selected } = this.props;
+        const { classes, lists, onSelectBook, height, loading, article, selected } = this.props;
         const { drawerOpen } = this.state;
         let drawer = (
             <Drawer
@@ -132,14 +132,14 @@ class MyDrawer extends Component {
                     lists.map(({ title }, i) =>
                         <List key={i}>
                             <ListItem button onClick={() => onSelectBook(title)}>
-                                <ListItemText classes={{primary:title===selected&&classes.listItemText}}>{title}</ListItemText>
+                                <ListItemText classes={{ primary: title === selected && classes.listItemText }}>{title}</ListItemText>
                             </ListItem>
                         </List>
                     )
                 }
             </Drawer>
         );
-
+        const paper = <Paper dangerouslySetInnerHTML={{ __html: article }} className={classes.paper} />;
         return (
             <div className={classes.appFrame} style={{ height }}>
                 <AppBar className={classNames(classes.appBar, {
@@ -155,7 +155,7 @@ class MyDrawer extends Component {
                             {selected}
                         </Typography>
                         {
-                            loading?<CircularProgress color="inherit" size={20} />:''
+                            loading ? <CircularProgress color="inherit" size={20} /> : ''
                         }
                         <div className={classes.grow}></div>
                         <div>
@@ -169,12 +169,7 @@ class MyDrawer extends Component {
                 <main className={classNames(classes.content, {
                     [classes.contentShift]: drawerOpen,
                 })}>
-                    {/* {
-                        loading ?
-                            <div style={{ textAlign: "center" ,marginTop:100}} ><CircularProgress /></div> :
-                            <Paper dangerouslySetInnerHTML={{ __html: article }} className={classes.paper}></Paper>
-                    } */}
-                    <Paper dangerouslySetInnerHTML={{ __html: article }} className={classes.paper}></Paper>
+                    {paper}
                 </main>
             </div>
 
