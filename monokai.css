@@ -1,9 +1,7 @@
 /*
 Monokai style - ported by Luigi Maselli - http://grigio.org
 */
-code {
-  padding:0;
-}
+
 .hljs {
   display: block;
   overflow-x: auto;
@@ -14,6 +12,8 @@ code {
   font-size: 14px;
   border-radius: 8px;
   line-height: 1.5em;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .hljs-tag,
