@@ -323,3 +323,21 @@ divide(1,2);
 const divideCurrying = a => b => a/b;
 divideCurrying(1)(2);
 ```
+## 生命周期(新)
+React v16.3将`componentWillMount、componentWillReceiveProps、componentWillUpdate`设成`UNSAFE_`，并且提示在17版后将这3个生命周期废除。但是添加了两个新的生命周期：`static getDerivedStateFromProps`和`getSnapshotBeforeUpdate`。
+### static getDerivedStateFromProps
+该钩子函数触发时间：
+1. 组件构建完成之后，挂载之前;
+2. 每次获得新的props之后。
+```
+static getDerivedStateFromProps(nextProps,prevState){
+
+}
+```
+### getSnapshotBeforeUpdate
+
+
+
+### 废除的原因
+1. 在首次加载异步请求数据时，`componentWillMount`并没有比`componentDidMount`有多少优势；
+2. `componentWillMount`中订阅事件可能不会在`componentWillUnmount`中销毁。在以后的异步渲染机制中，`componentWillMount`可能被其他事务打断，导致`componentWillUnmount`不被触发，最终导致内存泄漏。而`componentDidMount`之后一定会触发`componentWillUnmount`

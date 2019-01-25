@@ -26,7 +26,14 @@ function insideConvert(inside) {
         , inside);
 
 }
-
+function safe(inside){
+    return [{
+        regExp: /</g, // 匹配 < , （注意：必须放在第一个）
+        treatment: () => '&lt;'
+    }].reduce(
+        (prev, { regExp, treatment }) => prev.replace(regExp, treatment)
+        , inside);
+}
 /*
     正则转换配置
 */
@@ -77,7 +84,7 @@ const regExps = [
         regExp: /^`{3}\s{0,}/, // 匹配代码片段
         convert(text, controller) {
             const { isInPre } = controller;
-            let result = isInPre ? '</pre>' : '<pre class="code">';
+            let result = isInPre ? '</code></pre>' : '<pre><code>';//<pre class="code">
             controller.isInPre = !isInPre;
             return result;
         },
@@ -147,7 +154,7 @@ function markdown2html(markdownText) {
                 }
             } else { //未有正则匹配成功 --> 普通文本  --> 进一步匹配并修改行内部样式，如加粗、倾斜
                 return stateController.isInPre ?
-                    insideConvert(line) :
+                    safe(line) :
                     `<p class="article-p">${insideConvert(line)}</p>`;
             }
         }).join('\n') + '</li></ul>';

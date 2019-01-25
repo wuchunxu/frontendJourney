@@ -28,34 +28,39 @@
 }
 /* 标题样式 */
 .article-h1,.article-h2,.article-h3,.article-h4 {
-    font-family:'等线',Tahoma;
-    font-weight: bold;
+    font-family:Tahoma,'黑体';
+    font-weight: normal;
+    margin:0;
+    color:#111;
 }
 .article-h1 {
     font-size: 30px;
     text-align: center;
-    color: #4CAF50;
+    color:#4CAF50;
 }
 .article-h2 {
-    font-size: 24px;
+    font-size: 22px;
     border-bottom:1px solid #ccc;
     padding:10px;
-    color:#66BB6A;
+    /* color:#0091EA; */
+    /* #66BB6A; */
 }
 .article-h3 {
     font-size: 20px;
     padding:10px;
 }
 .article-h4 {
-    font-size: 16px;
-    padding:10px;
+    font-size: 18px;
+    padding:5px;
     
 }
 p{
-    font-family: Consolas,serif;
+    font-family: Consolas,'等线';
     line-height: 1.6em;
-    padding:5px 10px;
+    /* padding:5px 10px; */
     text-indent: 2em;
+    font-size: 14px;
+    color:#111;
 }
 pre.code {
     padding:10px;
@@ -91,10 +96,13 @@ pre.code+pre.code {
     -webkit-background-clip: text;
 }
 span.code {
-    background:#C8E6C9;
+    /* background:#C8E6C9; */
     padding:5px;
-    color:#43A047;
+    /* color:#43A047; */
+    color:#4CAF50;
+    /* font-style: italic; */
     border-radius: 4px;
+    font-size: 15px;
 }
 blockquote.hint{
     background: #C8E6C9;
