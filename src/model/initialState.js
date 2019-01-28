@@ -4,7 +4,8 @@ const initialState = {
             {
                 title:'JavaScript',
                 children:[
-                    { title:'JS性能优化' }
+                    { title:'JS性能优化' },
+                    { title:'TypeScript'}
                 ]
             },
             { 
@@ -36,6 +37,7 @@ const initialState = {
         selected:'Git'
     },
     article:'',
+    content:[], // 文章目录
     loading:false
     
 }

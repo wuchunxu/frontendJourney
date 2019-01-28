@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Drawer, withStyles, List, ListItem, ListItemText, AppBar, Toolbar, Typography, Divider, Paper, CircularProgress, IconButton, ListItemIcon
+    Drawer, withStyles, List, ListItem, ListItemText, AppBar, Toolbar, Typography, Divider, Paper, CircularProgress, IconButton, ListItemIcon, Button
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -13,6 +13,7 @@ import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Folder from '@material-ui/icons/Folder';
 import FolderOpen from '@material-ui/icons/FolderOpen';
+import TopArrow from '@material-ui/icons/Publish'
 import File from '@material-ui/icons/InsertDriveFileOutlined';
 
 import hljs from 'highlight.js';
@@ -45,7 +46,8 @@ const styles = theme => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-        marginLeft: -drawerWidth
+        marginLeft: -drawerWidth,
+        marginTop: 64
     },
     //导航条
     appBar: {
@@ -86,7 +88,7 @@ const styles = theme => ({
     },
     paper: {
         backgroundColor: '#F1F8E9',
-        marginTop: 60
+        // marginTop: 60
     },
     listItemText: {
         transition: theme.transitions.create('color', {
@@ -109,14 +111,15 @@ class MyDrawer extends Component {
     static propTypes = {
         classes: PropTypes.object.isRequired,
         onSelectBook: PropTypes.func.isRequired,
-        article: PropTypes.string,
+        article: PropTypes.object,
         loading: PropTypes.bool
     }
 
 
     state = {
         drawerOpen: true,
-        open: [false]
+        open: [false],
+        menuOpen: false
     }
 
     openDrawer = () => this.setState({ drawerOpen: true })
@@ -124,6 +127,9 @@ class MyDrawer extends Component {
     openProfile = () => {
         console.log('open profile')
     }
+
+    codeElement = null;
+    scrollContainer = null;
 
     componentDidMount() {
         hljs.initHighlightingOnLoad();
@@ -140,24 +146,64 @@ class MyDrawer extends Component {
         }
         this.setState({
             open: folders
-        })
+        });
+        this.codeElement = document.getElementById('code');
+        const toTopButton = document.querySelector('.back-to-top');
+        this.scrollContainer = this.codeElement.parentNode;
+
+        this.scrollContainer.onscroll = () => {
+            const content = document.querySelector('.article-content');
+            const contentHeight = parseInt(document.defaultView.getComputedStyle(content, null).height);
+            const scrollTop = this.scrollContainer.scrollTop;
+            if (scrollTop > contentHeight) {
+                toTopButton.style = 'display:block;';
+            }
+            if (scrollTop < contentHeight) {
+                toTopButton.style = 'display:none;';
+            }
+            // codeElement.parentNode.scrollTop = 0;
+        }
+    }
+    componentWillUnmount() {
+        this.scrollContainer.onscroll = null;
     }
     componentDidUpdate() {
-        const codeEle = document.getElementById('code');
-        // 着色
-        codeEle.querySelectorAll('code').forEach(ele => {
-            hljs.highlightBlock(ele);
-        });
-        codeEle.parentNode.scrollTop = 0;
 
+        if (this.codeElement) {
+            // 着色
+            this.codeElement.querySelectorAll('code').forEach(ele => hljs.highlightBlock(ele));
+            this.backToTop();
+        }
 
     }
+
+    backToTop = () => this.scrollContainer.scrollTop = 0;
+
     handleClick = (index) => {
         const { open } = this.state;
         const isOpen = open[index];
-        open[index]=!isOpen;
+        open[index] = !isOpen;
         this.setState({
             open
+        })
+    }
+    scrollToAnchor = (anchorName) => {
+        if (anchorName) {
+            // 找到锚点
+            let anchorElement = document.getElementById(anchorName);
+            // 如果对应id的锚点存在，就跳转到锚点
+            if (anchorElement) { anchorElement.scrollIntoView({ block: 'start', behavior: 'smooth' }); }
+        }
+
+    }
+    openMenu = () => {
+        this.setState({
+            menuOpen: true
+        })
+    }
+    closeMenu = () => {
+        this.setState({
+            menuOpen: false
         })
     }
     render() {
@@ -165,6 +211,7 @@ class MyDrawer extends Component {
         const { drawerOpen, open } = this.state;
         // 将open数组记录的状态反映到视图上
         // console.log(selected)
+        // console.log(article.content)
         let drawer = (
             <Drawer
                 variant="persistent"
@@ -184,7 +231,7 @@ class MyDrawer extends Component {
                         <List key={i}>
                             {
                                 children ?
-                                    <ListItem button onClick={()=>this.handleClick(i)}>
+                                    <ListItem button onClick={() => this.handleClick(i)}>
                                         <ListItemIcon>
                                             {open[i] ? <FolderOpen /> : <Folder />}
                                         </ListItemIcon>
@@ -226,7 +273,10 @@ class MyDrawer extends Component {
             </Drawer>
         );
 
-        const paper = <Paper dangerouslySetInnerHTML={{ __html: article }} className={classes.paper} id="code" />;
+        const paper = <Paper dangerouslySetInnerHTML={{ __html: article.html }} className={classes.paper} id="code" />;
+        const toTop = (<div onClick={this.backToTop} className="back-to-top">
+            <TopArrow fontSize="large" />
+        </div>);
         return (
             <div className={classes.appFrame} style={{ height }}>
                 <AppBar className={classNames(classes.appBar, {
@@ -244,6 +294,7 @@ class MyDrawer extends Component {
                         {
                             loading ? <CircularProgress color="inherit" size={20} /> : ''
                         }
+
                         <div className={classes.grow}></div>
                         <div>
                             <IconButton onClick={this.openProfile} color="inherit">
@@ -251,12 +302,29 @@ class MyDrawer extends Component {
                             </IconButton>
                         </div>
                     </Toolbar>
+
+
                 </AppBar>
                 {drawer}
                 <main className={classNames(classes.content, {
                     [classes.contentShift]: drawerOpen,
                 })}>
+                    <Paper>
+                        <div className="article-content">
+                            <h3 className="content-title">目录</h3>
+                            <ul>
+                                {
+                                    article.content && article.content.map((ele, i) => {
+                                        return <li key={i}>
+                                            <a onClick={() => this.scrollToAnchor(ele)}>{ele}</a>
+                                        </li>
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    </Paper>
                     {paper}
+                    {toTop}
                 </main>
             </div>
 

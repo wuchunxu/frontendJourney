@@ -1,4 +1,5 @@
 
+let content = [];
 /*
     非结构转换（行内部样式转换），包括字体加粗和倾斜
 */
@@ -18,7 +19,7 @@ function insideConvert(inside) {
         },
         {
             regExp: /`{1}.*?`{1}/g, //匹配文字内嵌的代码
-            treatment: target => `<span class="code">${target.slice(1,-1)}</span>`
+            treatment: target => `<span class="code">${target.slice(1, -1)}</span>`
         }
 
     ].reduce(
@@ -26,7 +27,7 @@ function insideConvert(inside) {
         , inside);
 
 }
-function safe(inside){
+function safe(inside) {
     return [{
         regExp: /</g, // 匹配 < , （注意：必须放在第一个）
         treatment: () => '&lt;'
@@ -49,9 +50,12 @@ const regExps = [
         regExp: /^#{2}\s+/,
         convert(text, controller) {
             const { isLiNotClosed } = controller;
+            let title = text.replace(this.regExp, '');
+            title = title.replace(/^\s+|\s+$/g, ''); // 去除收尾空格
+            content.push(title);
             let result = `${isLiNotClosed ? '</li>' : ''}
                     <li class="chapter-item paper">
-                        <h2 class="article-h2">${text.replace(this.regExp, '')}</h2>`;
+                        <h2 class="article-h2"><a id="${title}">${title}</a></h2>`;
             controller.isLiNotClosed = !isLiNotClosed;
             return result;
         }
@@ -88,23 +92,23 @@ const regExps = [
             controller.isInPre = !isInPre;
             return result;
         },
-        isCode:true
+        isCode: true
     },
     {
-        regExp:/^>/, // 匹配提示
-        convert(text){
+        regExp: /^>/, // 匹配提示
+        convert(text) {
             return `<blockquote class="hint">${text.substring(1)}</blockquote>`
         }
     },
     {
         regExp: /^\s+$/,//匹配空行
-        convert(){
+        convert() {
             return '';
         }
     },
     {
-        regExp:/(\s\|\s){1}/,
-        isTable:true,
+        regExp: /(\s\|\s){1}/,
+        isTable: true,
     }
 ];
 
@@ -113,41 +117,41 @@ const regExps = [
     包括：h1,h2,h3,h4,h5,h6,pre
 */
 function markdown2html(markdownText) {
-    
+    content = [];
+
     const cut2Lines = text => text.split(/\n/); // 切成一行一行，如果文本太大可能有性能问题！
-    
     const isMatched = (text, regExp) => text.search(regExp) > -1; // 指定文本是否匹配给定的正则表达式
 
-    const text2Tr = text => '\n\t<tr>'+text.split('|').map(td=>'<td>'+td+'</td>').join('') +'</tr>';
+    const text2Tr = text => '\n\t<tr>' + text.split('|').map(td => '<td>' + td + '</td>').join('') + '</tr>';
 
     const stateController = { // 状态机
         isLiNotClosed: false,
         isInPre: false,
-        isInTable:false
+        isInTable: false
     };
-    
-    return cut2Lines(markdownText) // markdown文本按行进行切割
+    console.log(cut2Lines(markdownText)[1])
+    const html = cut2Lines(markdownText) // markdown文本按行进行切割
         .map(line => { // 逐行将markdown翻译成html
             const regExp = regExps.find(({ regExp }) => isMatched(line, regExp)); // 查找匹配到的正则
             // console.log(regExp)
-            
+
             if (regExp) {
-                if(regExp.isTable){ // 检测到table元素
+                if (regExp.isTable) { // 检测到table元素
                     //console.log('table');
-                    if(stateController.isInTable){
+                    if (stateController.isInTable) {
                         // 在table里
                         return text2Tr(line);
-                    }else{
+                    } else {
                         // 当前还不在table里，表明进入table
                         // console.log('检测到table并且还没进入');
                         stateController.isInTable = true;
                         return `\n<table class="material-table">${text2Tr(line)}`;
                     }
-                }else{ // 未检测到table元素
-                    if(stateController.isInTable){
+                } else { // 未检测到table元素
+                    if (stateController.isInTable) {
                         stateController.isInTable = false;
                         return `\n</table>${regExp.convert(line, stateController)}`;
-                    }else{
+                    } else {
                         stateController.isInTable = false;
                         return regExp.convert(line, stateController);
                     }
@@ -157,11 +161,17 @@ function markdown2html(markdownText) {
                     safe(line) :
                     `<p class="article-p">${insideConvert(line)}</p>`;
             }
-        }).join('\n') + '</li></ul>';
+        }).join('') + '</li></ul>';
+
+    return {
+        html, content
+    }
+
 }
 // module.exports = {
 //     markdown2html
 // }
+
 export {
     markdown2html
 };
