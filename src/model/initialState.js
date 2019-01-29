@@ -34,7 +34,7 @@ const initialState = {
             { title: '微信小程序', icon: '' },
             { title: '正则表达式', icon: '' },
         ],
-        selected:'Git'
+        selected:'请在左侧目录选择查看'
     },
     article:'',
     content:[], // 文章目录

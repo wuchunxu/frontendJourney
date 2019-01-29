@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    Drawer, withStyles, List, ListItem, ListItemText, AppBar, Toolbar, Typography, Divider, Paper, CircularProgress, IconButton, ListItemIcon, Button
+    Drawer, withStyles, List, ListItem, ListItemText, AppBar, Toolbar, Typography, Divider, Paper, CircularProgress, IconButton, ListItemIcon
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -134,7 +134,7 @@ class MyDrawer extends Component {
     componentDidMount() {
         hljs.initHighlightingOnLoad();
         const { lists } = this.props;
-        console.log(lists)
+        // console.log(lists)
         const folders_length = lists.reduce((counter, { children }) =>
             children ? counter + 1 : counter,
             0);
@@ -153,7 +153,7 @@ class MyDrawer extends Component {
 
         this.scrollContainer.onscroll = () => {
             const content = document.querySelector('.article-content');
-            const contentHeight = parseInt(document.defaultView.getComputedStyle(content, null).height);
+            const contentHeight = parseInt(document.defaultView.getComputedStyle(content, null).height, 0);
             const scrollTop = this.scrollContainer.scrollTop;
             if (scrollTop > contentHeight) {
                 toTopButton.style = 'display:block;';
@@ -272,6 +272,7 @@ class MyDrawer extends Component {
                 }
             </Drawer>
         );
+        console.log(article.content)
 
         const paper = <Paper dangerouslySetInnerHTML={{ __html: article.html }} className={classes.paper} id="code" />;
         const toTop = (<div onClick={this.backToTop} className="back-to-top">
@@ -296,6 +297,7 @@ class MyDrawer extends Component {
                         }
 
                         <div className={classes.grow}></div>
+                        <div><a style={{color:'#fff',fontSize:14,textDecoration:'none'}} href="https://wuchunxu.github.io/frontEnd_learning">查看2017版笔记</a></div>
                         <div>
                             <IconButton onClick={this.openProfile} color="inherit">
                                 <AccountCircle />
@@ -309,20 +311,33 @@ class MyDrawer extends Component {
                 <main className={classNames(classes.content, {
                     [classes.contentShift]: drawerOpen,
                 })}>
-                    <Paper>
-                        <div className="article-content">
-                            <h3 className="content-title">目录</h3>
-                            <ul>
-                                {
-                                    article.content && article.content.map((ele, i) => {
-                                        return <li key={i}>
-                                            <a onClick={() => this.scrollToAnchor(ele)}>{ele}</a>
-                                        </li>
-                                    })
-                                }
-                            </ul>
-                        </div>
-                    </Paper>
+                    {
+                        article.content ? <Paper>
+                            <div className="article-content">
+                                <h3 className="content-title-1">目录</h3>
+                                <ul>
+                                    {
+                                        article.content.map(({title,children}, i) => {
+                                            return <li key={i}>
+                                                <a className="content-title-2" onClick={() => this.scrollToAnchor(title)}>{title}</a>
+                                                {
+                                                    children ? <ul>
+                                                        {
+                                                            children.map(({title},j)=>
+                                                                <li key={i+'_'+j}>
+                                                                    <a onClick={() => this.scrollToAnchor(title)}>{title}</a>
+                                                                </li>
+                                                            )
+                                                        }
+                                                    </ul> :''
+                                                }
+                                            </li>
+                                        })
+                                    }
+                                </ul>
+                            </div>
+                        </Paper> : ''
+                    }
                     {paper}
                     {toTop}
                 </main>

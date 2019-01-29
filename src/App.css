@@ -161,13 +161,19 @@ blockquote.hint{
    padding:10px;
    box-sizing: border-box;
 }
-.article-content .content-title {
+.article-content .content-title-1 {
     padding-left: 30px;
     color:#43A047;
 }
+.content-title-2 {
+    font-weight: bold;
+}
 .article-content li {
     padding:5px;
-    list-style-type: disc;
+    list-style-type: upper-roman;
+}
+.article-content li ul li {
+    list-style-type: decimal;
 }
 .article-content a {
     color:#111;
