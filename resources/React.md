@@ -1,20 +1,42 @@
 # React
 ## 函数式编程
-### 了解函数式编程--WHAT,WHY
-**JavaScript中函数可以赋值给变量，那么函数就可以当作变量来使用了。比如，函数可以当作参数进行传递，也可以作为结果返回**(说到这里，我想到了闭包，闭包形成的很自然啊)。
-
-函数式是一种编程范式，与面向对象技术不同。为什么要用函数式，可以先了解一下“命令式”和“声明式”编程方式的区别。像ES5中，Array.prototype.map、reduce函数就是函数式，它们的参数是一个回调函数，用来定义遍历数组的操作。用map与for循环的区别是，前者更关注对数组元素的具体操作，不用考虑如何遍历了。
-
-函数式将具体实现过程进行了封装。小函数联合使用可以封装成大的函数，就像“搭积木”。这一点来看，模块的封装也是类似的道理。
-
-### 使用ES6语法
-#### 使用const可以保证函数定义后不会被重写
+https://llh911001.gitbooks.io/mostly-adequate-guide-chinese/content/ch1.html
+### 命令式和声明式
+以“求出1,2,3,4,5,6”的平方和立方值为例。
 ```
-const log = (msg)=>console.log(msg) ;
+// 命令式
+var arr = [1,2,3,4,5,6],
+    square = [],
+    cube = [];
+// 用循环指明每一步的操作
+for(var i=0;i<arr.length;i++){
+    square[i] = arr[i]*arr[i];
+    cube[i] = square[i]*arr[i];
+}
+console.log(square);
+console.log(cube);
 ```
-### 函数式编程的基本概念
+```
+// 声明式
+var arr = [1,2,3,4,5,6];
+var square = arr.map( num => num*num ); // 只提供公式（表达式）：num => num*num
+var cube = arr.map( num => num*num*num );
+console.log(square);
+console.log(cube);
+```
+这里，命令式，用for循环指明循环的次数，每个循环做什么，结果存到哪里去；
+
+而声明式，即`map`函数，只要告诉它如何处理每个元素即可，**只关注要什么样的结果，不关注如何得到这样的结果**。
+### 函数式
+函数式编程（Functional Programming），属于声明式，在编码时，代码更关注“做什么”，而不是“怎么做”。就像sql语句，只关注查什么，不关注如何查。
+
+ES6中的箭头函数，就是为了更好的写函数式，最简的写法就是lambda表达式。
+```
+const square = num => num * num; // 右侧是一个lambda表达式，const可以保证square函数不被重写
+```
+### 函数式的特性
 #### 不可变性
-不可变性的工作机制是，不改变原数据，在拷贝上修改。
+不可变（immutable），即不改变原始数据，而是复制后，在副本上修改。
 ```
 let color_lawn = {
     title:"lawn",
@@ -33,36 +55,63 @@ const rateColor = (color,rating)=>({
 //数组
 const addColor = (title,list)=>[...list,{title}]
 ```
-### 纯函数
-纯函数(1)至少接收一个参数；(2)必须返回一个值；(3)不能修改外环境和参数
-### 数据的转换
-ES5为Array新增了API，其中就有不少是“干净的”操作(不影响原数组)。
-#### Array.prototype.filter--数组的过滤
-按照以前的思路，我们可能会用for循环遍历，if判断，找到目标值并用splice()将其删除。这里，按“不可变的原则”，我们可以使用filter：
+>拓展：当对象中属性嵌套很深时，做深拷贝很耗费性能，这时可以使用immutable.js，它采用了结构共享的方式提升了性能。
+#### 纯函数
+纯函数是没有副作用的函数，它传入值，计算后，返回值，不对该函数外任何变量产生影响。
+可以将纯函数理解成数学中的`y=f(x)`，只负责将`x`进行一系列计算，得到一个`y`值。
+### JavaScript中函数式API
+包括数组的`map、filter、reduce、every、some、find`。
+#### filter
+`filter`通常用来进行删除操作：
 ```
+const removeColor = (remove,arr)=>
+    arr.filter(color => color !== remove) //留下满足条件的
+
 const colors = ['blue','red','green','yellow'];
-const removeColor = (remove,arr)=>{
-    return arr.filter(color=>color !== remove) //只要不是去除对象就留下
-}
-    console.log(removeColor('yellow',colors).join(','));
+removeColor('yellow',colors).join(',');
 ```
-#### Array.prototype.map
-            
-**需求：创建纯函数，修改对象数组中的某个对象。**
+#### map
+`map()`是映射，传入的回调或者表达式规定了**如何将现有的数组映射成一个新数组**，是一生一，一对一的处理。React中大量使用`map`函数，用于将`data`映射成视图(HTML元素)。
+#### reduce
+`reduce()`通常用在统计中，统计一个数组中所有值，最终得到一个值。
+```
+//求和
+const sum = (arr) => arr.reduce((curResult,num) => curResult+num,0 ); // curResult表示当前统计结果，是一个零时的值
+var arr = [1,2,3,4,5,6,7,8];
+sum(arr);
+```
+#### every
+`every()`对应数学中的任意，比如集合set中，任意值大于10，这是一个逻辑运算。
+```
+const arr = [1,11,12,13];
+// 数组中所有的数都大于10吗？
+arr.every( num => num > 10 ); //false
+```
+#### some
+`some()`对应数学中的存在，写法和`every()`类似。
+
+### 增删改的不可变写法
 ```
 let colors=[
     {name:"red"},
     {name:'green'},
     {name:'yellow'}
 ];
-//创建纯函数
-const editColors = (oldName,name,arr)=>
-    arr.map(ele=>ele.name===oldName?({...ele,name}):ele)
-    
-    console.log(editColors('yellow','blue',colors));
+// 增 add
+const addColor = (colors,newColor) => colors.concat(newColor);
+
+// 删 delete
+const deleteColor = (colors,deleteTarget) => colors.filter(({name}) => name !== deleteTarget );
+
+// 改 Update
+const updateColor = (colors,target,now) => 
+    colors.map(color => color.name === target ? ({...color,name:now}):color);
+
+let result = addColor( colors,{ name:'black'} );
+deleteColor(colors,'yellow');
+
 ```
-
-
+### 常见的数据结构转换
 #### 对象转换成数组
 ```
 const colors = {
@@ -71,21 +120,13 @@ const colors = {
     "blue":"63B8FF"
 };
 //将该对象转换成数组
-const = colorsArray = Object.keys(colors).map(key=>{
+const colorsArray = Object.keys(colors).map(key=>{
     name:key,
     value:colors[key]
 })
 ```
-#### Array.prototype.reduce
-```
-//利用reduce求最大值
-const nums = [2,1,6,22,16,5,5,10];
-const max = nums.reduce(
-    (max,num)=>(num>max)?num:max
-,0)
-```
+
 ### 高阶函数
-#### WHAT
 高阶函数是可以操作其他函数的函数。可以将函数当作参数传入，也可以返回一个函数，或者两着都有。
 ### 函数的合成
 函数式编程通常将具体的业务逻辑拆分成小型的**纯函数**，最终再整合到一起构成应用。像jQuery中的链式调用就是合成的一种方式，不过还有更优雅的：
@@ -254,7 +295,7 @@ ReactDOM.render(
 ### 属性验证和属性默认值
 #### 类写法
 ```
-class Summary extend React.Component {
+class Summary extends React.Component {
     //属性验证器，静态的，属于类
     static propTypes = {
         ingredients:Proptypes.number,
