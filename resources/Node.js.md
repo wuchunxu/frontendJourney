@@ -61,3 +61,23 @@ var buf3 = Buffer.allocUnsafe(1024); // 快速分配一块1024字节的缓冲区
 var buf4 = Buffer.from('test');
 var buf5 = Buffer.from([1,2,3]);
 ```
+## 异步串行
+```
+indexAction(){
+    // 现有一组id号，需要顺序更新每个id对应的值
+    const resources = [10, 97, 33, 23, 21, 25, 24, 28, 26, 30, 15, 99];
+    // 从第0个开始
+    this.updateAmount(0);
+}
+async updateAmount(index) {
+    if (index > resources.length - 1) {
+        return;
+    }
+    const id = resources[index];
+    const data = await this.getAmount(id);
+    const amount = data[0].amount;
+    const affectedRows = await this.setAmount(id, amount);
+    console.log(affectedRows);
+    this.updateAmount(index + 1); // 递归
+}
+```
