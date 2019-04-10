@@ -3,18 +3,21 @@
 ### 启动MongoDB
 #### 命令行启动
 ```
-mongod --dbpath d:\mongodb\data  # 指定数据库存储位置
+$ mongod --dbpath d:\mongodb\data  # 指定数据库存储位置
 ```
 #### 通过配置文件启动
+编写配置文件：
 ```
-mongod -f  D:\mongodb\config\mongo.config 
-
-// D:\mongodb\config\mongo.config
-dbpath=D:\mongodb\data
+//D:\mongodb\config\mongo.config
+dbpath=D:\mongodb\data # 数据库路径
 logpath=D:\mongodb\logs\mongo.log  # 设置log路径，设置后，cmd中就不再显示log信息了
 logappend=true # 重启服务后，log追加到已有的文件中
 ```
-### 配置windows服务
+命令行启动：
+```
+$ mongod -f  D:\mongodb\config\mongo.config 
+```
+### 将MongoDB配置成windows服务
 ```
 // 注册服务，【管理员权限运行】
 mongod --install -f  D:\mongodb\config\mongo.config --serviceName "MongoDB"
@@ -25,6 +28,8 @@ net stop MongoDB # 关闭服务
 
 mongod --remove # 卸载服务，删除服务
 ```
+### 配置远程MongoDB
+>注意问题：服务器要开启对应端口访问，否则连不上数据库。
 ## 基本操作
 ### 创建数据库
 ### 增
