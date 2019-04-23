@@ -382,3 +382,37 @@ static getDerivedStateFromProps(nextProps,prevState){
 ### 废除的原因
 1. 在首次加载异步请求数据时，`componentWillMount`并没有比`componentDidMount`有多少优势；
 2. `componentWillMount`中订阅事件可能不会在`componentWillUnmount`中销毁。在以后的异步渲染机制中，`componentWillMount`可能被其他事务打断，导致`componentWillUnmount`不被触发，最终导致内存泄漏。而`componentDidMount`之后一定会触发`componentWillUnmount`
+## 动画
+```
+/* fade 动画开始 */
+.fade-enter {
+    opacity: 0;
+    transform:scale(0.3);
+}
+.fade-enter-active {
+    opacity: 1;
+    transform:scale(1);
+    transition:all .3s ease;
+}
+.fade-exit {
+    opacity: 1;
+    transform: scale(1);
+}
+.fade-exit-active {
+    opacity: 0;
+    transform: scale(0.3);
+    transition: all .3s ease;
+}
+/* fade 动画结束 */
+```
+```
+import { CSSTransition } from 'react-transition-group';
+
+<CSSTransition
+    in={detail} // detail为状态
+    classNames="fade"
+    timeout={{ enter: 300, exit: 300 }}
+    unmountOnExit>
+    <span className={styles.sub_title}>{sub_title}</span>
+</CSSTransition>
+```
