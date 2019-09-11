@@ -40,6 +40,7 @@ server {
     location / {
         root   html;
         index  index.html index.htm;
+        try_files $uri /index.html; # 让前端路由生效
     }
     location /api {
         rewrite  ^/api(.*)$ /api/$1 break;

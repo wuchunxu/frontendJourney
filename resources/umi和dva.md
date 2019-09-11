@@ -73,3 +73,15 @@ function goToListPage() {
 }
 ```
 ## dva.js
+
+## 下载文件
+```
+.then(response => response.blob())
+        .then(blob => {
+            var url = window.URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = "filename.xlsx";
+            a.click();                    
+        });
+```

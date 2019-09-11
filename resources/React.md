@@ -416,3 +416,71 @@ import { CSSTransition } from 'react-transition-group';
     <span className={styles.sub_title}>{sub_title}</span>
 </CSSTransition>
 ```
+## WebSocket
+```
+// src/models/novel.js
+subscriptions: {
+    // 监听浏览器中的路径，若是指定路径，则创建WebSocket连接
+    setupHistory ({ dispatch, history }) {
+      history.listen((location) => {
+        if (location.pathname.indexOf('reptile/novel')) {
+            const ws = new WebSocket('ws://localhost:8080');
+            dispatch({
+                type: 'updateState', 
+                payload: { ws: ws },
+            });
+            ws.onopen = function (e) {
+                console.log('连接上 ws 服务端了');
+                ws.send(JSON.stringify({ flag: flag, data: currentItem }));
+            }
+            ws.onmessage = function(msg) { 
+                console.log('接收服务端发过来的消息: %o', msg); 
+                result += msg.data + '\n'; 
+                that.setState({ result: result });
+            }; 
+            ws.onclose = function (e) {
+                console.log('ws 连接关闭了');
+            }
+        }
+      })
+    },
+  },
+```
+## Hook
+### 先导
+认识Hook之前，应该先了解一下Memoize。
+#### Memoize
+memoize是一中function的缓存机制，利用了闭包的原理。
+```
+const memoize = function(fn){
+    const cache = {};
+    return function(){
+        const key = JSON.stringify(arguments);
+        let value = cache[key]; // 优先读取缓存中的结果
+        if(!value){ // 如果没有再计算
+            value = [fn(arguments)]; // 防止fn(arguments)结果为undefined或null，下次还得重新计算
+        }
+        return value[0];
+    }
+}
+```
+### 初步认识Hook：userState和useEffect
+```
+import React, { useState, useEffect } from 'react';
+
+export default function Example() {
+
+    const [count, setCount] = useState(0); // 传入初始值0以初始化一个state，state名为count，更改count的函数名为setCount
+    // const [otherStateProp,setOtherStateProp] = useState(null); // 可以定义多个其他的state
+
+    // React完成对DOM的更改后执行Effect函数，相当于componentDidMount、componentDidUpdate、componentWillUnmount
+    useEffect(() => {
+        document.title = count;
+    });
+
+    // state更改后，重新渲染DOM
+    return (
+        <div style={{ width: 50, height: 30 }} onClick={() => setCount(count + 1)}>点击次数:{count}</div>
+    );
+}
+```
